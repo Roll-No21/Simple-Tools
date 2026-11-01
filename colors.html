@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Colour codes · Simple Tools</title>
+  <meta name="description" content="Pick a colour and copy its code as HEX, RGB, HSL, HSV or CMYK. Includes shades and a readability check.">
+  <meta name="theme-color" content="#e9e3da">
+  <script>
+    /* set the look before the first paint so there is no colour flash */
+    try {
+      var stTheme = JSON.parse(localStorage.getItem("st.theme") || "null");
+      var stAccent = JSON.parse(localStorage.getItem("st.accent") || "null");
+      if (stTheme === "dark" || (!stTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      if (stAccent) document.documentElement.style.setProperty("--accent", stAccent);
+    } catch (err) { /* private mode, carry on */ }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236b8f71'/%3E%3Cpath d='M50 18a32 32 0 0 1 0 64z' fill='%23fffdf8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="colors">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">◐</span><span>Simple Tools</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html" data-nav="home">Home</a>
+        <a href="date.html" data-nav="date">Date</a>
+        <a href="special.html" data-nav="special">Special day</a>
+        <a href="time-12h.html" data-nav="time12">24 → 12</a>
+        <a href="time-zones.html" data-nav="zones">Time zones</a>
+        <a href="calculator.html" data-nav="calc">Calculator</a>
+        <a href="colors.html" data-nav="colors">Colours</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"></button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="Appearance settings"></button>
+      </div>
+    </div>
+  </header>
+  <div class="settings" id="settingsPanel" hidden></div>
+
+  <main class="wrap">
+
+    <section class="card" aria-labelledby="pickTitle">
+      <div class="section-head">
+        <h2 id="pickTitle">Pick a colour</h2>
+        <span class="hint">type a HEX code, or use the picker</span>
+      </div>
+
+      <div class="color-hero">
+        <div class="color-preview" id="preview">#6B8F71</div>
+        <div style="display:grid;gap:12px">
+          <div class="row">
+            <div class="field" style="flex:1 1 170px">
+              <label for="hexInput">HEX code</label>
+              <input class="input mono" id="hexInput" value="#6B8F71" maxlength="9" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="field" style="max-width:110px">
+              <label for="picker">Picker</label>
+              <input class="input" type="color" id="picker" value="#6B8F71">
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn btn-sm btn-ghost" id="randomBtn" type="button">Random colour</button>
+            <button class="btn btn-sm btn-primary" id="saveBtn" type="button">Save to palette</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="two-col">
+      <section class="card" aria-labelledby="codesTitle">
+        <div class="section-head">
+          <h2 id="codesTitle">The same colour, written differently</h2>
+          <span class="hint">tap copy</span>
+        </div>
+        <div class="code-list" id="codeList"></div>
+      </section>
+
+      <section class="card" aria-labelledby="shadesTitle">
+        <div class="section-head">
+          <h2 id="shadesTitle">Shades</h2>
+          <span class="hint">light → dark</span>
+        </div>
+        <div class="shades" id="shades"></div>
+
+        <h3 style="margin:20px 0 6px;font-size:0.92rem">Readability</h3>
+        <p class="small muted" id="contrastNote" style="margin:0">—</p>
+        <div class="row" style="gap:8px;margin-top:10px">
+          <span class="chip" id="onWhite">—</span>
+          <span class="chip" id="onBlack">—</span>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" aria-labelledby="paletteTitle">
+      <div class="section-head">
+        <h2 id="paletteTitle">Saved palette</h2>
+        <span class="hint">up to 12 colours, kept in this browser</span>
+      </div>
+      <div class="palette" id="palette"></div>
+      <p class="hint" style="margin:12px 0 0" id="paletteNote"></p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Simple Tools · colours never leave your device</p>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/colors.js"></script>
+</body>
+</html>

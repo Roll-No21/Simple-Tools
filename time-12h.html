@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>24-hour to 12-hour time · Simple Tools</title>
+  <meta name="description" content="Convert 24-hour time like 23:45 into 12-hour AM/PM time, and 12-hour time back to 24 hours. Includes a full reference table.">
+  <meta name="theme-color" content="#e9e3da">
+  <script>
+    /* set the look before the first paint so there is no colour flash */
+    try {
+      var stTheme = JSON.parse(localStorage.getItem("st.theme") || "null");
+      var stAccent = JSON.parse(localStorage.getItem("st.accent") || "null");
+      if (stTheme === "dark" || (!stTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      if (stAccent) document.documentElement.style.setProperty("--accent", stAccent);
+    } catch (err) { /* private mode, carry on */ }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236b8f71'/%3E%3Cpath d='M50 18a32 32 0 0 1 0 64z' fill='%23fffdf8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="time12">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">◐</span><span>Simple Tools</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html" data-nav="home">Home</a>
+        <a href="date.html" data-nav="date">Date</a>
+        <a href="special.html" data-nav="special">Special day</a>
+        <a href="time-12h.html" data-nav="time12">24 → 12</a>
+        <a href="time-zones.html" data-nav="zones">Time zones</a>
+        <a href="calculator.html" data-nav="calc">Calculator</a>
+        <a href="colors.html" data-nav="colors">Colours</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"></button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="Appearance settings"></button>
+      </div>
+    </div>
+  </header>
+  <div class="settings" id="settingsPanel" hidden></div>
+
+  <main class="wrap">
+
+    <section class="card">
+      <p class="hero-greet">Right now, where you are</p>
+      <div class="clock-big" id="live12">—:—</div>
+      <p class="clock-sub" id="live24">—</p>
+      <p class="clock-sub" id="liveDate"></p>
+    </section>
+
+    <section class="card" aria-labelledby="convTitle">
+      <div class="section-head">
+        <h2 id="convTitle">Converter</h2>
+        <div class="seg" role="tablist" aria-label="Conversion direction">
+          <button type="button" role="tab" id="tab24to12" aria-selected="true">24 → 12</button>
+          <button type="button" role="tab" id="tab12to24" aria-selected="false">12 → 24</button>
+        </div>
+      </div>
+
+      <div id="panel24to12">
+        <div class="row">
+          <div class="field" style="max-width:200px">
+            <label for="in24">24-hour time</label>
+            <input class="input" type="time" id="in24" value="23:45">
+          </div>
+          <button class="btn btn-sm btn-ghost" id="nowBtn" type="button">Use current time</button>
+          <button class="btn btn-sm btn-ghost" id="copy12" type="button">Copy result</button>
+        </div>
+        <div class="convert-out" style="margin-top:16px">
+          <span class="val" id="out12">11:45 PM</span>
+          <span class="muted" id="out12note">written as 23:45 in 24-hour time</span>
+        </div>
+        <p class="hint" style="margin:12px 0 0" id="friendly12"></p>
+      </div>
+
+      <div id="panel12to24" hidden>
+        <div class="row">
+          <div class="field" style="max-width:120px">
+            <label for="inHour">Hour</label>
+            <select class="select" id="inHour"></select>
+          </div>
+          <div class="field" style="max-width:120px">
+            <label for="inMin">Minutes</label>
+            <input class="input" type="number" id="inMin" min="0" max="59" value="0" inputmode="numeric">
+          </div>
+          <div class="field" style="max-width:150px">
+            <label>Part of day</label>
+            <div class="seg" id="ampm">
+              <button type="button" role="tab" data-ampm="AM" aria-selected="true">AM</button>
+              <button type="button" role="tab" data-ampm="PM" aria-selected="false">PM</button>
+            </div>
+          </div>
+        </div>
+        <div class="convert-out" style="margin-top:16px">
+          <span class="val" id="out24">23:45</span>
+          <span class="muted" id="out24note">in 24-hour time</span>
+        </div>
+        <p class="hint" style="margin:12px 0 0">12:00 AM is midnight, 12:00 PM is noon.</p>
+      </div>
+    </section>
+
+    <details class="panel">
+      <summary><span>The whole day, both ways <span class="hint">24 rows</span></span></summary>
+      <div class="panel-body">
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr><th scope="col">24-hour</th><th scope="col">12-hour</th><th scope="col">Also said as</th></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <section class="card">
+      <h2 style="font-size:1.02rem;margin-bottom:8px">The two rules</h2>
+      <p class="small muted" style="margin:0 0 8px">
+        Morning (00:00 – 11:59) keeps the same hour number and takes <strong>AM</strong>;
+        00:xx becomes 12:xx AM. Afternoon and night (12:00 – 23:59) take <strong>PM</strong>
+        and the hour is reduced by 12, so 23:45 becomes 11:45 PM.
+      </p>
+      <p class="small muted" style="margin:0">
+        12:00 on its own is noon, 00:00 is midnight — both written as 12:00 with their
+        AM/PM label doing the work.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Simple Tools · times use your device clock</p>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/time12.js"></script>
+</body>
+</html>

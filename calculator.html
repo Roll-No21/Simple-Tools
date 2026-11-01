@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculator · Simple Tools</title>
+  <meta name="description" content="A standard, scientific and percentage calculator with a saved history. Percentage mode shows the answer as a progress bar.">
+  <meta name="theme-color" content="#e9e3da">
+  <script>
+    /* set the look before the first paint so there is no colour flash */
+    try {
+      var stTheme = JSON.parse(localStorage.getItem("st.theme") || "null");
+      var stAccent = JSON.parse(localStorage.getItem("st.accent") || "null");
+      if (stTheme === "dark" || (!stTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      if (stAccent) document.documentElement.style.setProperty("--accent", stAccent);
+    } catch (err) { /* private mode, carry on */ }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236b8f71'/%3E%3Cpath d='M50 18a32 32 0 0 1 0 64z' fill='%23fffdf8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="calc">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">◐</span><span>Simple Tools</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html" data-nav="home">Home</a>
+        <a href="date.html" data-nav="date">Date</a>
+        <a href="special.html" data-nav="special">Special day</a>
+        <a href="time-12h.html" data-nav="time12">24 → 12</a>
+        <a href="time-zones.html" data-nav="zones">Time zones</a>
+        <a href="calculator.html" data-nav="calc">Calculator</a>
+        <a href="colors.html" data-nav="colors">Colours</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"></button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="Appearance settings"></button>
+      </div>
+    </div>
+  </header>
+  <div class="settings" id="settingsPanel" hidden></div>
+
+  <main class="wrap">
+
+    <div class="calc-layout">
+
+      <section class="card" aria-labelledby="calcTitle">
+        <h1 id="calcTitle" class="sr-only" style="position:absolute;left:-9999px">Calculator</h1>
+
+        <div class="seg" role="tablist" aria-label="Calculator mode" style="margin-bottom:14px">
+          <button type="button" role="tab" id="tabStandard" aria-selected="true">Standard</button>
+          <button type="button" role="tab" id="tabScientific" aria-selected="false">Scientific</button>
+          <button type="button" role="tab" id="tabPercent" aria-selected="false">Percentage</button>
+        </div>
+
+        <div id="calcArea">
+          <div class="calc-display">
+            <div class="calc-expr" id="expr" aria-live="off">0</div>
+            <div class="calc-result" id="result" aria-live="polite">0</div>
+          </div>
+
+          <div class="keys sci" id="sciKeys" hidden style="margin-bottom:9px">
+            <button class="key fn" type="button" data-insert="sin(">sin</button>
+            <button class="key fn" type="button" data-insert="cos(">cos</button>
+            <button class="key fn" type="button" data-insert="tan(">tan</button>
+            <button class="key fn" type="button" data-insert="log(">log</button>
+            <button class="key fn" type="button" data-insert="ln(">ln</button>
+            <button class="key fn" type="button" data-insert="√(">√</button>
+            <button class="key fn" type="button" data-insert="^2">x²</button>
+            <button class="key fn" type="button" data-insert="^">xʸ</button>
+            <button class="key fn" type="button" data-insert="(">(</button>
+            <button class="key fn" type="button" data-insert=")">)</button>
+            <button class="key fn" type="button" data-insert="π">π</button>
+            <button class="key fn" type="button" data-insert="e">e</button>
+            <button class="key fn" type="button" data-insert="!">n!</button>
+            <button class="key fn" type="button" data-insert="abs(">abs</button>
+            <button class="key fn" type="button" id="angleBtn" aria-pressed="false" title="Degrees or radians">DEG</button>
+          </div>
+
+          <div class="keys" id="mainKeys">
+            <button class="key warn" type="button" data-action="clear">AC</button>
+            <button class="key" type="button" data-action="back">⌫</button>
+            <button class="key op" type="button" data-insert="%">%</button>
+            <button class="key op" type="button" data-insert="÷">÷</button>
+
+            <button class="key" type="button" data-insert="7">7</button>
+            <button class="key" type="button" data-insert="8">8</button>
+            <button class="key" type="button" data-insert="9">9</button>
+            <button class="key op" type="button" data-insert="×">×</button>
+
+            <button class="key" type="button" data-insert="4">4</button>
+            <button class="key" type="button" data-insert="5">5</button>
+            <button class="key" type="button" data-insert="6">6</button>
+            <button class="key op" type="button" data-insert="−">−</button>
+
+            <button class="key" type="button" data-insert="1">1</button>
+            <button class="key" type="button" data-insert="2">2</button>
+            <button class="key" type="button" data-insert="3">3</button>
+            <button class="key op" type="button" data-insert="+">+</button>
+
+            <button class="key" type="button" data-action="sign">±</button>
+            <button class="key" type="button" data-insert="0">0</button>
+            <button class="key" type="button" data-insert=".">.</button>
+            <button class="key equals" type="button" data-action="equals">=</button>
+          </div>
+        </div>
+
+        <div id="pctArea" hidden>
+          <div class="pct-grid">
+
+            <div class="pct-card">
+              <h4>What is X% of Y?</h4>
+              <div class="pct-line">
+                <input class="input" id="p1a" type="number" value="15" inputmode="decimal" aria-label="Percentage">
+                <span class="muted">% of</span>
+                <input class="input" id="p1b" type="number" value="200" inputmode="decimal" aria-label="Amount">
+              </div>
+              <div class="pct-out">
+                <span class="pct-value" id="p1out">30</span>
+                <span class="pct-note" id="p1note">the bar shows the share</span>
+              </div>
+              <div class="bar"><div class="bar-fill" id="p1bar"></div></div>
+            </div>
+
+            <div class="pct-card">
+              <h4>X is what % of Y?</h4>
+              <div class="pct-line">
+                <input class="input" id="p2a" type="number" value="50" inputmode="decimal" aria-label="Part">
+                <span class="muted">out of</span>
+                <input class="input" id="p2b" type="number" value="200" inputmode="decimal" aria-label="Whole">
+              </div>
+              <div class="pct-out">
+                <span class="pct-value" id="p2out">25%</span>
+                <span class="pct-note" id="p2note">50 of 200</span>
+              </div>
+              <div class="bar"><div class="bar-fill" id="p2bar"></div></div>
+            </div>
+
+            <div class="pct-card">
+              <h4>Change from A to B</h4>
+              <div class="pct-line">
+                <input class="input" id="p3a" type="number" value="100" inputmode="decimal" aria-label="From">
+                <span class="muted">→</span>
+                <input class="input" id="p3b" type="number" value="125" inputmode="decimal" aria-label="To">
+              </div>
+              <div class="pct-out">
+                <span class="pct-value" id="p3out">+25%</span>
+                <span class="pct-note" id="p3note">increase of 25</span>
+              </div>
+              <div class="bar" id="p3barWrap"><div class="bar-fill" id="p3bar"></div></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="historyTitle">
+        <div class="section-head">
+          <h2 id="historyTitle">History</h2>
+          <button class="btn btn-sm btn-ghost" type="button" id="clearHistory">Clear</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+        <p class="hint" style="margin:12px 0 0" id="historyNote">The last 20 sums are kept in this browser.</p>
+      </section>
+
+    </div>
+
+    <section class="card">
+      <h2 style="font-size:1.02rem;margin-bottom:8px">How percentages behave here</h2>
+      <p class="small muted" style="margin:0 0 6px">
+        In Standard and Scientific mode <strong>10%</strong> simply means 0.10, so
+        <span class="mono">200 + 10%</span> gives 200.1. For “10% of 200”, “50 is what % of 200”
+        and percentage change, use the <strong>Percentage</strong> tab — it does the right maths
+        and draws the answer as a bar.
+      </p>
+      <p class="small muted" style="margin:0">
+        Trigonometry follows the <strong>DEG / RAD</strong> button in Scientific mode.
+        Typing on a keyboard works too: digits, <span class="mono">+ − * / ^ ( ) %</span>,
+        Enter for =, Backspace to erase, Esc to clear.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Simple Tools · history clears when you clear your browser data</p>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/calculator.js"></script>
+</body>
+</html>
