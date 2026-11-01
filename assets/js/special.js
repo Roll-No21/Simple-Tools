@@ -252,10 +252,20 @@
 
   var selected = new Date();
   selected.setHours(12, 0, 0, 0);
+  var localCount = 0;
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
 
   function renderLocal() {
     var names = observancesFor(selected);
     var isToday = isSameDay(selected, new Date());
+    localCount = names.length;
 
     var title, sub;
     if (names.length) {
@@ -341,6 +351,36 @@
     });
   }
 
+  /* If the built-in list had nothing for this date but Wikipedia does,
+     make the big answer mention it instead of claiming an ordinary day. */
+  function showOnlineVerdict(holidays) {
+    if (localCount || !holidays.length) return;
+
+    var names = holidays
+      .slice(0, 3)
+      .map(function (h) {
+        // the first clause is usually the name of the day itself
+        var full = cleanText(h.text, 140);
+        var firstClause = full.split(/[,;(\[]/)[0].trim();
+        if (firstClause.length < 6) firstClause = full.slice(0, 70).trim();
+        return firstClause.replace(/[\s,;:.]+$/, "");
+      })
+      .filter(Boolean);
+
+    if (!names.length) return;
+
+    el("verdictTitle").textContent =
+      names.length === 1 ? "Yes — " + names[0] : "Yes — " + names.length + " observances today";
+    el("verdictSub").textContent =
+      longDate(selected) + " · from Wikipedia's list, not the built-in one";
+    el("verdictMark").textContent = "✦";
+    el("localBadges").innerHTML = names
+      .map(function (n) {
+        return '<span class="badge">' + escapeHtml(n) + "</span>";
+      })
+      .join("");
+  }
+
   function loadOnline(date) {
     var id = ++requestId;
     var mm = ST.pad2(date.getMonth() + 1);
@@ -376,6 +416,7 @@
             .join("");
         }
         setStatus("holidayStatus", "live", "live from Wikipedia");
+        showOnlineVerdict(holidays);
       })
       .catch(function () {
         if (id !== requestId) return;

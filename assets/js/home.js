@@ -8,6 +8,7 @@
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
   ];
+  var DOW = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   var el = function (id) {
     return document.getElementById(id);
@@ -19,12 +20,7 @@
 
     el("greeting").textContent = ST.greeting(hour);
     el("heroDate").textContent =
-      now.toLocaleDateString(undefined, {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      });
+      DOW[now.getDay()] + ", " + now.getDate() + " " + MONTHS[now.getMonth()] + " " + now.getFullYear();
 
     el("chipTime").innerHTML =
       "<strong>" + ST.pad2(hour) + ":" + ST.pad2(now.getMinutes()) + ":" +

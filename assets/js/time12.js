@@ -22,6 +22,13 @@
     return h12 + ":" + ST.pad2(minute) + " " + suffix;
   }
 
+  function to12WithSeconds(hour24, minute, second) {
+    var suffix = hour24 < 12 ? "AM" : "PM";
+    var h12 = hour24 % 12;
+    if (h12 === 0) h12 = 12;
+    return ST.pad2(h12) + ":" + ST.pad2(minute) + ":" + ST.pad2(second) + " " + suffix;
+  }
+
   function to24(hour12, minute, suffix) {
     var h = hour12 % 12;
     if (suffix === "PM") h += 12;
@@ -69,7 +76,7 @@
     var h = now.getHours();
     var m = now.getMinutes();
     var s = now.getSeconds();
-    el("live12").textContent = to12(h, m) + ":" + ST.pad2(s);
+    el("live12").textContent = to12WithSeconds(h, m, s);
     el("live24").textContent =
       ST.pad2(h) + ":" + ST.pad2(m) + ":" + ST.pad2(s) + " in 24-hour time";
     el("liveDate").textContent = now.toLocaleDateString(undefined, {
