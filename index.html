@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simple Tools — a quiet corner for daily tasks</title>
+  <meta name="description" content="A small set of simple tools for everyday life: today's date, world days, time conversion, a calculator and colour codes.">
+  <meta name="theme-color" content="#e9e3da">
+  <script>
+    /* set the look before the first paint so there is no colour flash */
+    try {
+      var stTheme = JSON.parse(localStorage.getItem("st.theme") || "null");
+      var stAccent = JSON.parse(localStorage.getItem("st.accent") || "null");
+      if (stTheme === "dark" || (!stTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      if (stAccent) document.documentElement.style.setProperty("--accent", stAccent);
+    } catch (err) { /* private mode, carry on */ }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236b8f71'/%3E%3Cpath d='M50 18a32 32 0 0 1 0 64z' fill='%23fffdf8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="home">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">◐</span><span>Simple Tools</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html" data-nav="home">Home</a>
+        <a href="date.html" data-nav="date">Date</a>
+        <a href="special.html" data-nav="special">Special day</a>
+        <a href="time-12h.html" data-nav="time12">24 → 12</a>
+        <a href="time-zones.html" data-nav="zones">Time zones</a>
+        <a href="calculator.html" data-nav="calc">Calculator</a>
+        <a href="colors.html" data-nav="colors">Colours</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"></button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="Appearance settings"></button>
+      </div>
+    </div>
+  </header>
+  <div class="settings" id="settingsPanel" hidden></div>
+
+  <main class="wrap">
+
+    <section class="card hero">
+      <p class="hero-greet" id="greeting">Hello</p>
+      <h1 class="hero-title" id="heroDate">Loading the date…</h1>
+      <p class="hero-sub">A calm little corner for the small tasks of a normal day — the date, the time, a sum, a colour.</p>
+      <div class="hero-chips">
+        <span class="chip" id="chipTime">--:--:--</span>
+        <span class="chip" id="chipMonth">Month —</span>
+        <span class="chip" id="chipDay">Day —</span>
+        <span class="chip" id="chipWeek">Week —</span>
+      </div>
+      <a class="btn btn-primary" href="calculator.html">Open the calculator</a>
+    </section>
+
+    <section aria-labelledby="favTitle">
+      <div class="section-head">
+        <h2 id="favTitle">Favourites</h2>
+        <span class="hint">Tap the star on any tool to pin it here</span>
+      </div>
+      <div class="grid" id="favGrid"></div>
+      <p class="empty" id="favEmpty" hidden>No favourites yet — tap a star below and the tool will sit here.</p>
+    </section>
+
+    <section aria-labelledby="allTitle">
+      <div class="section-head">
+        <h2 id="allTitle">All tools</h2>
+        <span class="hint">6 pages</span>
+      </div>
+      <div class="grid" id="toolGrid"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Simple Tools · your favourites, button colour and calculator history stay in this browser</p>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

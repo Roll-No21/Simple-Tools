@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Special about today · Simple Tools</title>
+  <meta name="description" content="Is today a special day? World days, holidays and small history notes for today's date, checked offline and online.">
+  <meta name="theme-color" content="#e9e3da">
+  <script>
+    /* set the look before the first paint so there is no colour flash */
+    try {
+      var stTheme = JSON.parse(localStorage.getItem("st.theme") || "null");
+      var stAccent = JSON.parse(localStorage.getItem("st.accent") || "null");
+      if (stTheme === "dark" || (!stTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      if (stAccent) document.documentElement.style.setProperty("--accent", stAccent);
+    } catch (err) { /* private mode, carry on */ }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236b8f71'/%3E%3Cpath d='M50 18a32 32 0 0 1 0 64z' fill='%23fffdf8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="special">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">◐</span><span>Simple Tools</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html" data-nav="home">Home</a>
+        <a href="date.html" data-nav="date">Date</a>
+        <a href="special.html" data-nav="special">Special day</a>
+        <a href="time-12h.html" data-nav="time12">24 → 12</a>
+        <a href="time-zones.html" data-nav="zones">Time zones</a>
+        <a href="calculator.html" data-nav="calc">Calculator</a>
+        <a href="colors.html" data-nav="colors">Colours</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"></button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="Appearance settings"></button>
+      </div>
+    </div>
+  </header>
+  <div class="settings" id="settingsPanel" hidden></div>
+
+  <main class="wrap">
+
+    <section class="card">
+      <div class="verdict">
+        <div class="verdict-mark" id="verdictMark" aria-hidden="true">✦</div>
+        <div>
+          <h1 class="hero-title" id="verdictTitle" style="font-size:clamp(1.35rem,3.6vw,1.85rem)">Looking at today…</h1>
+          <p id="verdictSub">One moment.</p>
+        </div>
+      </div>
+      <div class="badge-list" id="localBadges"></div>
+
+      <div class="row" style="margin-top:20px">
+        <div class="field" style="max-width:210px">
+          <label for="dateInput">Check another date</label>
+          <input class="input" type="date" id="dateInput">
+        </div>
+        <button class="btn btn-sm btn-ghost" id="todayBtn" type="button">Back to today</button>
+        <button class="btn btn-sm btn-primary" id="refreshBtn" type="button">Refresh online lists</button>
+      </div>
+    </section>
+
+    <div class="two-col">
+      <section class="card" aria-labelledby="holidaysTitle">
+        <div class="section-head">
+          <h2 id="holidaysTitle">Holidays &amp; observances</h2>
+          <span class="status" id="holidayStatus"><i class="dot waiting"></i>waiting</span>
+        </div>
+        <ul class="list" id="holidayList"></ul>
+        <p class="hint" style="margin:10px 0 0">Source: Wikipedia “On this day”.</p>
+      </section>
+
+      <section class="card" aria-labelledby="eventsTitle">
+        <div class="section-head">
+          <h2 id="eventsTitle">On this day</h2>
+          <span class="status" id="eventStatus"><i class="dot waiting"></i>waiting</span>
+        </div>
+        <ul class="list" id="eventList"></ul>
+        <p class="hint" style="margin:10px 0 0">A few things that happened on this date.</p>
+      </section>
+    </div>
+
+    <section class="card" aria-labelledby="upcomingTitle">
+      <div class="section-head">
+        <h2 id="upcomingTitle">Coming up</h2>
+        <span class="hint">the next world days</span>
+      </div>
+      <ul class="list" id="upcomingList"></ul>
+      <p class="hint" style="margin:10px 0 0">Worked out on your device — no internet needed.</p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Simple Tools · world days from a built-in list, extras from Wikipedia</p>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/special.js"></script>
+</body>
+</html>

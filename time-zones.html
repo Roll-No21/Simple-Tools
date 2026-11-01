@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time zones · Simple Tools</title>
+  <meta name="description" content="Convert your local time to UTC and to cities around the world, with correct daylight-saving handling.">
+  <meta name="theme-color" content="#e9e3da">
+  <script>
+    /* set the look before the first paint so there is no colour flash */
+    try {
+      var stTheme = JSON.parse(localStorage.getItem("st.theme") || "null");
+      var stAccent = JSON.parse(localStorage.getItem("st.accent") || "null");
+      if (stTheme === "dark" || (!stTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+      if (stAccent) document.documentElement.style.setProperty("--accent", stAccent);
+    } catch (err) { /* private mode, carry on */ }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%236b8f71'/%3E%3Cpath d='M50 18a32 32 0 0 1 0 64z' fill='%23fffdf8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="zones">
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">◐</span><span>Simple Tools</span></a>
+      <nav class="nav" aria-label="Main">
+        <a href="index.html" data-nav="home">Home</a>
+        <a href="date.html" data-nav="date">Date</a>
+        <a href="special.html" data-nav="special">Special day</a>
+        <a href="time-12h.html" data-nav="time12">24 → 12</a>
+        <a href="time-zones.html" data-nav="zones">Time zones</a>
+        <a href="calculator.html" data-nav="calc">Calculator</a>
+        <a href="colors.html" data-nav="colors">Colours</a>
+      </nav>
+      <div class="header-tools">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch theme"></button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="Appearance settings"></button>
+      </div>
+    </div>
+  </header>
+  <div class="settings" id="settingsPanel" hidden></div>
+
+  <main class="wrap">
+
+    <section class="card">
+      <p class="hero-greet">Your time, right now</p>
+      <div class="clock-big" id="localClock">—:—</div>
+      <p class="clock-sub" id="localZone">—</p>
+      <div class="hero-chips" style="margin-top:14px">
+        <span class="chip" id="localOffset">UTC —</span>
+        <span class="chip" id="localDate">—</span>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="convTitle">
+      <div class="section-head">
+        <h2 id="convTitle">Convert a time</h2>
+        <div class="seg" role="group" aria-label="Time format">
+          <button type="button" id="fmt24" aria-selected="true">24-hour</button>
+          <button type="button" id="fmt12" aria-selected="false">12-hour</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field" style="flex:2 1 240px">
+          <label for="srcZone">Time in</label>
+          <select class="select" id="srcZone"></select>
+        </div>
+        <div class="field" style="max-width:180px">
+          <label for="srcDate">Date</label>
+          <input class="input" type="date" id="srcDate">
+        </div>
+        <div class="field" style="max-width:140px">
+          <label for="srcTime">Time</label>
+          <input class="input" type="time" id="srcTime">
+        </div>
+        <button class="btn btn-sm btn-primary" id="nowBtn" type="button">Now</button>
+      </div>
+      <p class="hint" style="margin:12px 0 0" id="srcStatus"></p>
+    </section>
+
+    <section class="card" aria-labelledby="zonesTitle">
+      <div class="section-head">
+        <h2 id="zonesTitle">The same moment elsewhere</h2>
+        <span class="hint">saved in this browser</span>
+      </div>
+      <div class="list" id="zoneList" style="gap:9px"></div>
+
+      <div class="row" style="margin-top:16px">
+        <div class="field" style="flex:1 1 240px">
+          <label for="addZone">Add another place</label>
+          <select class="select" id="addZone"></select>
+        </div>
+        <button class="btn btn-sm btn-primary" id="addBtn" type="button">Add</button>
+        <button class="btn btn-sm btn-ghost" id="resetBtn" type="button">Reset list</button>
+      </div>
+      <p class="hint" style="margin:12px 0 0">You can keep up to 8 places. Tap the × to remove one.</p>
+    </section>
+
+    <section class="card">
+      <h2 style="font-size:1.02rem;margin-bottom:8px">A note on offsets</h2>
+      <p class="small muted" style="margin:0">
+        Offsets like <strong>UTC +05:30</strong> are worked out by your browser, including
+        daylight saving changes, so London can be 5 hours 30 minutes behind India in winter
+        and only 4 hours 30 minutes behind in summer.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Simple Tools · zone rules come from your browser, no account needed</p>
+  </footer>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/timezones.js"></script>
+</body>
+</html>
